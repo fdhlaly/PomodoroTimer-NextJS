@@ -164,14 +164,14 @@ const PomodoroTimer = () => {
       {/* Modal */}
       {isModalOpen && (
         <div
-          className={`fixed inset-0 flex items-center justify-center text-center bg-black bg-opacity-50 transition-opacity duration-300 ${
+          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
             isAnimating ? "opacity-100" : "opacity-0"
           }`}
         >
           <div
-            className={`bg-white text-black p-6 rounded-lg w-3/4 md:w-1/2 transform transition-transform duration-300 ${
+            className={`bg-white text-black p-6 rounded-lg text-center transform transition-transform duration-300 ${
               isAnimating ? "scale-100" : "scale-90"
-            }`}
+            } w-full max-w-lg md:max-w-2xl overflow-y-auto`}
           >
             <h2 className="text-2xl font-bold mb-4 pb-2 border-b">
               What is the Pomodoro Technique?
