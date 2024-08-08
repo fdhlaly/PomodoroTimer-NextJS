@@ -2,9 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FaSun, FaMoon } from "react-icons/fa";
+import { TbMusic, TbMusicOff } from "react-icons/tb";
 
 const PomodoroTimer = () => {
   const [isPomodoro, setIsPomodoro] = useState(true);
+  const [isPomodoroStarted, setIsPomodoroStarted] = useState(false);
   const [duration, setDuration] = useState(25 * 60);
   const [intervalId, setIntervalId] = useState(null);
   const [pomodoroCount, setPomodoroCount] = useState(0);
@@ -12,6 +14,7 @@ const PomodoroTimer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMusicPlay, setIsMusicPlay] = useState(false);
   const musicRef = useRef(null);
   const isInitialRender = useRef(true);
 
@@ -30,7 +33,10 @@ const PomodoroTimer = () => {
 
     if (musicRef.current) {
       musicRef.current.play();
+      setIsMusicPlay(true);
     }
+
+    setIsPomodoroStarted(true);
 
     let count = pomodoroCount;
     let currentDuration = isPomodoro ? 25 * 60 : 5 * 60;
@@ -71,6 +77,7 @@ const PomodoroTimer = () => {
       musicRef.current.pause();
       musicRef.current.currentTime = 0;
     }
+    setIsPomodoroStarted(false);
   };
 
   const openModal = () => {
@@ -91,6 +98,18 @@ const PomodoroTimer = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  const musicHandler = () => {
+    if (musicRef.current) {
+      if (isMusicPlay) {
+        musicRef.current.pause();
+        setIsMusicPlay(false);
+      } else {
+        musicRef.current.play();
+        setIsMusicPlay(true);
+      }
+    }
+  };
+
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
@@ -109,16 +128,32 @@ const PomodoroTimer = () => {
           : "bg-gradient-to-r from-pink-500 to-purple-600 text-black"
       }`}
     >
-      <button
-        onClick={toggleTheme}
-        className="text-2xl md:text-3xl cursor-pointer absolute top-3 right-3 bg-white/10 shadow-md rounded-full p-3 hover:bg-white/35 transition-colors duration-500"
-      >
-        {isDarkMode ? (
-          <FaSun className="text-yellow-500" />
-        ) : (
-          <FaMoon className="text-yellow-500" />
+      <div className="flex flex-row md:flex-col absolute top-3 right-3 gap-3">
+        <button
+          onClick={toggleTheme}
+          className="text-2xl md:text-3xl cursor-pointer bg-white/10 shadow-md rounded-full p-3 hover:bg-white/35 transition-all duration-500 active:scale-95"
+        >
+          {isDarkMode ? (
+            <FaSun className="text-yellow-500" />
+          ) : (
+            <FaMoon className="text-yellow-500" />
+          )}
+        </button>
+
+        {isPomodoroStarted && (
+          <button
+            className="text-2xl md:text-3xl cursor-pointer shadow-md rounded-full  bg-white/10 p-3 hover:bg-white/35 duration-500 active:scale-95 transition-all"
+            onClick={musicHandler}
+          >
+            {isMusicPlay ? (
+              <TbMusicOff className="text-yellow-500" />
+            ) : (
+              <TbMusic className="text-yellow-500" />
+            )}
+          </button>
         )}
-      </button>
+      </div>
+
       <h1 className="text-4xl md:text-5xl lg:text-6xl mb-6 text-center">
         Pomodoro Timer
       </h1>
@@ -193,7 +228,7 @@ const PomodoroTimer = () => {
             </p>
             <button
               onClick={closeModal}
-              className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+              className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all active:scale-95"
             >
               Close
             </button>
