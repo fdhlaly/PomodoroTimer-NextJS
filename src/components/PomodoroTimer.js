@@ -15,6 +15,7 @@ const PomodoroTimer = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMusicPlay, setIsMusicPlay] = useState(false);
+  const [isStartDisabled, setIsStartDisabled] = useState(false);
   const musicRef = useRef(null);
   const isInitialRender = useRef(true);
 
@@ -66,6 +67,7 @@ const PomodoroTimer = () => {
       }
     };
 
+    setIsStartDisabled(true);
     const newIntervalId = setInterval(timerFunction, 1000);
     setIntervalId(newIntervalId);
   };
@@ -78,13 +80,14 @@ const PomodoroTimer = () => {
       musicRef.current.currentTime = 0;
     }
     setIsPomodoroStarted(false);
+    setIsStartDisabled(false);
   };
 
   const openModal = () => {
     setIsModalOpen(true);
     setTimeout(() => {
       setIsAnimating(true);
-    }, 10); // Small delay to ensure transition is applied
+    }, 10);
   };
 
   const closeModal = () => {
@@ -166,7 +169,12 @@ const PomodoroTimer = () => {
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6 w-full justify-center">
         <button
           onClick={startPomodoro}
-          className={`px-6 py-3 transition-all w-full rounded-lg md:w-auto active:scale-95 ${
+          disabled={isStartDisabled}
+          className={`${
+            isStartDisabled
+              ? "opacity-50 cursor-not-allowed"
+              : "active:scale-95"
+          } px-6 py-3 transition-all w-full rounded-lg md:w-auto ${
             isDarkMode
               ? "bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700"
               : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
